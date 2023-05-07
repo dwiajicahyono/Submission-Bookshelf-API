@@ -1,27 +1,21 @@
-const http = require('http');
+const Hapi = require('@hapi/hapi');
 
-const requestListener = (request, response) => {
-  response.setHeader('Content-Type', 'text/html');
+const init = async () => {
+  const server = Hapi.server({
+    port: 9000,
+    host: 'localhost',
+  });
 
-  response.statusCode = 200;
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: (request, h) => {
+      return 'halo dwi';
+    },
+  });
 
-  const { method } = request;
-  if (method === 'GET') {
-    response.end('<h1>Test</h1>');
-  } if (method === 'POST') {
-    response.end('<h1>POST</h1>');
-  } if (method === 'PUT') {
-    response.end('<h1>PUT</h1>');
-  } if (method === 'DELETE') {
-    response.end('<h1>Siu</h1>');
-  }
+  await server.start();
+  console.log(`Server berjalan pada ${server.info.uri}`);
 };
 
-const server = http.createServer(requestListener);
-
-const port = 9000;
-const host = 'localhost';
-
-server.listen(port, host, () => {
-  console.log(`server running at http://${host}:${port}`);
-});
+init();
